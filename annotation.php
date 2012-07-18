@@ -1,6 +1,6 @@
 <?php
 
-namespace MattRWallace\Annotation;
+namespace MattRWallace\Exegesis;
 
 /**
  * Trait that contains shared functionality between the annotation class and

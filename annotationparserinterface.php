@@ -1,6 +1,6 @@
 <?php
 
-namespace MattRWallace\Annotation;
+namespace MattRWallace\Exegesis;
 
 interface AnnotationParserInterface {
 	public function getAnnotationArray();

@@ -1,6 +1,6 @@
 <?php
 
-namespace MattRWallace\Annotation;
+namespace MattRWallace\Exegesis;
 
 /**
  * Class to access custom annotations in the phpdoc blocks of class methods
