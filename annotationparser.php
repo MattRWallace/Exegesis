@@ -1,6 +1,6 @@
 <?php
 
-namespace MattRWallace\Exegesis;
+namespace Exegesis;
 
 /**
  * Object that parses a documentation block and extracts annotations from it
