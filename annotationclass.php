@@ -9,7 +9,7 @@ namespace Exegesis;
  *
  * @package Exegesis
  * @version 0.5
- * @copyright Copyright (c) 2010 Matt Wallace All rights reserved.
+ * @copyright Copyright (c) 2012 Matt Wallace All rights reserved.
  * @author Matt Wallace <matthew.wallace@ieee.org>
  * @license http://www.opensource.org/licenses/mit-license.html MIT Public License.
  * @link http://www.php.net/manual/en/class.reflectionclass.php See \ReflectionClass
