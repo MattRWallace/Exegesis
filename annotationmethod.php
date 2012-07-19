@@ -15,7 +15,8 @@ class AnnotationMethod extends \ReflectionMethod {
 	/**
 	 * Constructor
 	 *
-	 * @param \ReflectionMethod $method
+     * @param string $class Name of the class the method belongs to
+     * @param string $name Name of the method
 	 * @access public
 	 * @return void
 	 */

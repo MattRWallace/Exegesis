@@ -12,22 +12,6 @@ namespace Exegesis;
 trait Annotation {
 	private $annotations;
 
-	private static $parser = "\\Service\\Annotation\\DefaultParser";
-
-	/**
-	 * Allows the user to change the parser that will be used.  Allows for the
-	 * user to code a custom parser to change the syntax of annotations that
-	 * are allowed.
-	 *
-	 * @param string $parser
-	 * @static
-	 * @access public
-	 * @return void
-	 */
-	public static function changeParser(string $parser) {
-		$this->parser = $parser;
-	}
-
 	/**
 	 * Returns true or false if the specified annotation exists for this class
 	 * or method
