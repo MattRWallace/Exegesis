@@ -5,8 +5,11 @@ namespace Exegesis;
 /**
  * Class to access custom annotations in the phpdoc blocks of class methods
  *
- * @author Matt Wallace <matt@cs.txstate.edu>
- * @package Service\Annotation
+ * @package Exegesis
+ * @version 0.5
+ * @copyright Copyright (c) 2010 Matt Wallace All rights reserved.
+ * @author Matt Wallace <matthew.wallace@ieee.org>
+ * @license http://www.opensource.org/licenses/mit-license.html MIT Public License.
  */
 class AnnotationMethod extends \ReflectionMethod {
 

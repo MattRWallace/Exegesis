@@ -6,8 +6,12 @@ namespace Exegesis;
  * Object that parses a documentation block and extracts annotations from it
  * that do not belong to another popular annotations (like phpdoc).
  *
- * @author Matt Wallace <matt@cs.txstate.edu>
- * @package Service\Annotation
+ * @uses AnnotationParserInterface
+ * @package Exegesis
+ * @version 0.5
+ * @copyright Copyright (c) 2010 Matt Wallace All rights reserved.
+ * @author Matt Wallace <matthew.wallace@ieee.org>
+ * @license http://www.opensource.org/licenses/mit-license.html MIT Public License.
  */
 class AnnotationParser implements AnnotationParserInterface {
 

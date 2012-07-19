@@ -9,7 +9,7 @@ namespace Exegesis;
  * @version 0.5
  * @copyright Copyright (c) 2010 Matt Wallace All rights reserved.
  * @author Matt Wallace <matthew.wallace@ieee.org>
- * @license PHP Version 3.0 {@link http://www.php.net/license/3_0.txt}
+ * @license http://www.opensource.org/licenses/mit-license.html MIT Public License.
  */
 class AnnotationParameter extends \ReflectionParameter {
 

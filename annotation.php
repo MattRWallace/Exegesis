@@ -6,8 +6,11 @@ namespace Exegesis;
  * Trait that contains shared functionality between the annotation class and
  * annotation method functionality.
  *
- * @author Matt Wallace <matt@cs.txstate.edu>
- * @package Service\Annotation
+ * @package Exegesis
+ * @version 0.5
+ * @copyright Copyright (c) 2010 Matt Wallace All rights reserved.
+ * @author Matt Wallace <matthew.wallace@ieee.org>
+ * @license http://www.opensource.org/licenses/mit-license.html MIT Public License.
  */
 trait Annotation {
 	private $annotations;
