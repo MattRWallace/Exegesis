@@ -6,7 +6,7 @@ namespace Exegesis;
  * AnnotationFunction
  *
  * @package Exegesis
- * @version 0.5
+ * @version 0.5 (Beta 1)
  * @copyright Copyright (c) 2012 Matt Wallace All rights reserved.
  * @author Matt Wallace <matthew.wallace@ieee.org>
  * @license http://www.opensource.org/licenses/mit-license.html MIT Public License.
@@ -14,6 +14,7 @@ namespace Exegesis;
 class AnnotationFunction extends \ReflectionFunction {
 
     use Annotation;
+    use AnnotationFunctionTrait;
 
     /**
      * Constructor

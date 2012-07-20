@@ -5,10 +5,10 @@ namespace Exegesis;
 /**
  * Wrapper around the ReflectionClass class that provides the extra
  * functionality to pull annotated information out of documentation blocks
- * while still allowing all the functionality of the extended class.
+ * while still allowing access to all the functionality of the class being extended.
  *
  * @package Exegesis
- * @version 0.5
+ * @version 0.7 (Beta 2)
  * @copyright Copyright (c) 2012 Matt Wallace All rights reserved.
  * @author Matt Wallace <matthew.wallace@ieee.org>
  * @license http://www.opensource.org/licenses/mit-license.html MIT Public License.
@@ -22,7 +22,7 @@ class AnnotationClass extends \ReflectionClass {
 	/**
 	 * Constructor
 	 *
-	 * @param string $class
+	 * @param mixed $class Either a string containing the name of the class to reflect, or an object.
 	 * @access public
 	 * @return void
 	 */
@@ -34,109 +34,108 @@ class AnnotationClass extends \ReflectionClass {
 
 	/**
 	 * Wraps ReflectionClass::getConstructor to return an AnnotationMethod
-	 * instance of the constructor instead of a ReflectionMethod instance.
-     *
-     * @link http://www.php.net/manual/en/class.reflectionmethod.php See \ReflectionMethod
-     *
+	 * object of the constructor instead of a ReflectionMethod object.
+	 *
+	 * @link http://www.php.net/manual/en/class.reflectionmethod.php See \ReflectionMethod
+	 *
 	 * @access public
 	 * @return AnnotationMethod Returns an AnnotationMethod object reflecting the class' constructor.
 	 */
 	public function getConstructor() {
-		return new AnnotationMethod($this->getName(), parent::getConstructor()->getName());
-    }
-
-    /**
-     * Wraps ReflectionClass::getInterfaces() to return an array of
-     * AnnotationClass instances instead of an array of ReflectionClass
-     * instances.
-     *
-     * @access public
-     * @return array An associative array of interfaces, with keys as interface names and the array values as AnnotationClass objects.
-     */
-    public function getInterfaces() {
-        return array_map(function ($object) { return new AnnotationClass($object->getName()); }, parent::getInterfaces());
-    }
+		return new AnnotationMethod($this, '__construct');
+	}
 
 	/**
-	 * Wraps ReflectionClass::getMethod to return an AnnotationMethod instance
-     * of the requested method instead of a ReflectionMethod instance.
-     *
-     * @link http://www.php.net/manual/en/class.reflectionmethod.php See \ReflectionMethod
+	 * Wraps ReflectionClass::getInterfaces() to return an array of
+	 * AnnotationClass objects instead of an array of ReflectionClass
+	 * objects.
 	 *
-	 * @param mixed $name The method name to reflect.
+	 * @access public
+	 * @return array An associative array of interfaces, with keys as interface names and the array values as AnnotationClass objects.
+	 */
+	public function getInterfaces() {
+		return array_map(function ($object) { return new AnnotationClass($object); }, parent::getInterfaces());
+	}
+
+	/**
+	 * Wraps ReflectionClass::getMethod to return an AnnotationMethod object
+	 * of the requested method instead of a ReflectionMethod object.
+	 *
+	 * @link http://www.php.net/manual/en/class.reflectionmethod.php See \ReflectionMethod
+	 *
+	 * @param string $name The method name to reflect.
 	 * @access public
 	 * @return AnnotationMethod An AnnotationMethod object representing the requested method.
 	 */
 	public function getMethod($name) {
-		return new AnnotationMethod($this->getName(), parent::getMethod($name)->getName());
+		return new AnnotationMethod($this, $name);
 	}
 
 	/**
 	 * Wraps ReflectionClass::getMethods to return an array of AnnotationMethod
-	 * instances instead of an array of ReflectionMethod instances.
+	 * objects instead of an array of ReflectionMethod objects.
 	 *
-     * @link http://www.php.net/manual/en/class.reflectionmethod.php See \ReflectionMethod
-     * @link Exegesis
-     * @link
-     * http://www.php.net/manual/en/class.reflectionproperty.php#reflectionproperty.constants.modifiers Valid filter values
-     *
-	 * @param mixed $filter Filter the results to include only methods with
-     * certain attributes. Defaults to no filtering.
+	 * @link http://www.php.net/manual/en/class.reflectionmethod.php See \ReflectionMethod
+	 * @link Exegesis.AnnotationMethod.html See \Exegesis\AnnotationMethod
+	 * @link http://www.php.net/manual/en/class.reflectionproperty.php#reflectionproperty.constants.modifiers Valid filter values
+	 *
+	 * @param int $filter Filter the results to include only methods with
+	 * certain attributes. Defaults to no filtering.
 	 * @access public
 	 * @return array Returns an array of AnnotationMethod objects reflecting each method.
 	 */
 	public function getMethods($filter) {
-        return array_map(function($object) { return new AnnotationMethod($this->getName(), $object->getName()); }, parent::getMethods($filter));
+		return array_map(function($object) { return new AnnotationMethod($this, $object->getName()); }, parent::getMethods($filter));
 	}
 
 	/**
 	 * Wraps ReflectionClass::getParentClass to return an AnnotationClass
-	 * instance instead of a ReflectionClass instance.
+	 * object instead of a ReflectionClass object.
 	 *
 	 * @access public
 	 * @return AnnotationClass A AnnotationClass object representing the parent class of the invoking object.
 	 */
 	public function getParentClass() {
-		return new AnnotationClass(parent::getParentClass()->getName());
-    }
+		return new AnnotationClass(parent::getParentClass());
+	}
 
-    /**
-     * Wraps ReflectionClass::getProperties to return an array of
-     * AnnotationProperty instances instead of an array of ReflectionProperty
-     * instances.
-     *
-     * @link http://www.php.net/manual/en/class.reflectionproperty.php#reflectionproperty.constants.modifiers ReflectionProperty constants
-     *
-     * @param mixed $filter The optional filter, for filtering desired property types.
-     * @access public
-     * @return array An array of {@link AnnotationProperty} objects.
-     */
-    public function getProperties($filter) {
-        return array_map(function ($object) { return new AnnotationProperty($this->getName(), $object->getName()); }, parent::getProperties($filter));
-    }
+	/**
+	 * Wraps ReflectionClass::getProperties to return an array of
+	 * AnnotationProperty objects instead of an array of ReflectionProperty
+	 * objects.
+	 *
+	 * @link http://www.php.net/manual/en/class.reflectionproperty.php#reflectionproperty.constants.modifiers Valid filter values
+	 *
+	 * @param mixed $filter The optional filter, for filtering desired property types.
+	 * @access public
+	 * @return array An array of {@link AnnotationProperty} objects.
+	 */
+	public function getProperties($filter) {
+		return array_map(function ($object) { return new AnnotationProperty($this->getName(), $object->getName()); }, parent::getProperties($filter));
+	}
 
-    /**
-     * Wraps ReflectionClass::getProperty to return an an AnnotationProperty
-     * instance instead of a ReflectionProperty instance.
-     *
-     * @param mixed $name The property name.
-     * @access public
-     * @return void A AnnotationProperty object representing the requested property.
-     */
-    public function getProperty($name) {
-        return new AnnotationProperty($this->getName(), $name);
-    }
+	/**
+	 * Wraps ReflectionClass::getProperty to return an an AnnotationProperty
+	 * object instead of a ReflectionProperty object.
+	 *
+	 * @param string $name The name of the property to retrieve.
+	 * @access public
+	 * @return void A AnnotationProperty object representing the requested property.
+	 */
+	public function getProperty($name) {
+		return new AnnotationProperty($this->getName(), $name);
+	}
 
-    /**
-     * Wraps ReflectionClass::getTraits to return an AnnotationClass instance
-     * instead of a ReflectionClass instance.
-     *
-     * @access public
-     * @return array Returns an array with trait names in keys and instances of trait's AnnotationClass in values. Returns NULL in case of an error.
-     */
-    public function getTraits() {
-        if($traits = parent::getTraits())
-            return array_map(function ($object) { return new AnnotationClass($object->getName()); }, $traits);
-        return null;
-    }
+	/**
+	 * Wraps ReflectionClass::getTraits to return an AnnotationClass object
+	 * instead of a ReflectionClass object.
+	 *
+	 * @access public
+	 * @return array Returns an array with trait names in keys and objects of trait's AnnotationClass in values. Returns NULL in case of an error.
+	 */
+	public function getTraits() {
+		if($traits = parent::getTraits())
+			return array_map(function ($object) { return new AnnotationClass($object); }, $traits);
+		return null;
+	}
 }

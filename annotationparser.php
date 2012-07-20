@@ -3,17 +3,21 @@
 namespace Exegesis;
 
 /**
- * Object that parses a documentation block and extracts annotations from it
- * that do not belong to another popular annotations (like phpdoc).
+ * Parses a documentation string and extracts annotations.  There are
+ * blacklist for popular annotations currently in use so that, if desired, the
+ * parser will only cache custom annotations.
  *
  * @uses AnnotationParserInterface
  * @package Exegesis
- * @version 0.5
+ * @version 0.5 (Beta 1)
  * @copyright Copyright (c) 2012 Matt Wallace All rights reserved.
  * @author Matt Wallace <matthew.wallace@ieee.org>
  * @license http://www.opensource.org/licenses/mit-license.html MIT Public License.
  */
 class AnnotationParser implements AnnotationParserInterface {
+
+    // statics to identify blacklist
+    const PHPDOC = 8;
 
 	/**
 	 * Holds the class name of the optional custom parser that a user might
@@ -23,7 +27,7 @@ class AnnotationParser implements AnnotationParserInterface {
 	 * @access private
 	 * @static
 	 */
-	private static $parser=null;
+    private static $parser=null;
 
 	/**
 	 * Contains the documentation string passed to the parser
@@ -39,15 +43,15 @@ class AnnotationParser implements AnnotationParserInterface {
 	 * @var array
 	 * @access private
 	 */
-	private $annotations;
+	private $annotations = [];
 
 	/**
-	 * Blacklist of annotations that should be ignored.
+	 * phpdoc blacklist
 	 *
 	 * @var array
 	 * @access private
 	 */
-	private $reservedAnnotations = [
+	private static $phpdoc = [
 			'@api',
 			'@access',
 			'@author',
@@ -80,7 +84,9 @@ class AnnotationParser implements AnnotationParserInterface {
 			'@used-by',
 			'@var',
 			'@version',
-        ];
+         ];
+
+    private static $blacklist = [];
 
 	/**
 	 * Constructor
@@ -89,12 +95,11 @@ class AnnotationParser implements AnnotationParserInterface {
 	 * @access public
 	 * @return void
 	 */
-	public function __construct($docs) {
-		$this->docs        = $docs;
-		$this->annotations = [];
+	public function __construct($docs, $filter = 0) {
+		$this->docs = $docs;
 	}
 
-	private function parse() {
+    private function parse() {
 		// Remove the comment markers
 		$docs = str_replace(['/*', '*/', '*'], '', $this->docs);
 
@@ -124,7 +129,7 @@ class AnnotationParser implements AnnotationParserInterface {
 			}
 
 			// skip if the annotation is on the blacklist
-			if (in_array($line[0], $this->reservedAnnotations))
+			if (in_array($line[0], $this->blacklist))
 				continue;
 
 			// check for case where there are no arguments (flag)
@@ -200,5 +205,48 @@ class AnnotationParser implements AnnotationParserInterface {
 	 */
 	public static function setParser($parser) {
 		$this->parser = $parser;
-	}
+    }
+
+    /**
+     * Allows selection of builtin blacklists.  In order to select multiple
+     * lists use the pipe ( '|' )  to merge them.
+     *
+     * Available lists are:
+     *  * PHPDOC
+     *
+     * @param integer $filter
+     * @static
+     * @access public
+     * @return void
+     */
+    public static function setBlacklist($filter) {
+        if ($filter & self::PHPDOC)
+            self::$blacklist = array_merge(self::$blacklist, self::$phpdoc);
+    }
+
+    /**
+     * Add all items in the given array to the blacklist of annotations to
+     * ignore.
+     *
+     * @param array $array
+     * @static
+     * @access public
+     * @return void
+     */
+    public static function addBlacklistItems($array) {
+        self::$blacklist = array_merge(self::$blacklist, $array);
+    }
+
+    /**
+     * Remove all items in the given array from the blacklist of annotations to
+     * ignore.
+     *
+     * @param array $array
+     * @static
+     * @access public
+     * @return void
+     */
+    public static function removeBlacklistItems($array) {
+        self::$blacklist = array_diff(self::$blacklist, $array);
+    }
 }
