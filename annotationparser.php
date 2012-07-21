@@ -129,7 +129,7 @@ class AnnotationParser implements AnnotationParserInterface {
 			}
 
 			// skip if the annotation is on the blacklist
-			if (in_array($line[0], $this->blacklist))
+			if (self::$blacklist && in_array($line[0], self::$blacklist))
 				continue;
 
 			// check for case where there are no arguments (flag)
@@ -160,7 +160,7 @@ class AnnotationParser implements AnnotationParserInterface {
 					continue;
 
 				// non array annotation
-				if ($array) {
+				if (is_array($line[1])) {
 					// first occurence
 					if(!array_key_exists($line[0], $this->annotations))
 						$this->annotations[$line[0]] = [$line[1]];
@@ -184,8 +184,8 @@ class AnnotationParser implements AnnotationParserInterface {
 		// lazy instantiation of the annotations array
 		if (empty($this->annotations)) {
 			// custom parser?
-			if ($this->parser) {
-				$parser = new $this->parser($this->docs);
+			if (self::$parser) {
+				$parser = new self::$parser($this->docs);
 				$this->annotations = $parser->getAnnotationArray();
 			}
 			// use built in parser

@@ -57,5 +57,6 @@ class AnnotationMethod extends \ReflectionMethod {
 	public function getPrototype() {
 		$prototype = parent::getPrototype();
 
-		return new AnnotationMethod($prototype->getDeclaringClass(), $prototype->getName());
+        return new AnnotationMethod($prototype->getDeclaringClass(), $prototype->getName());
+    }
 }

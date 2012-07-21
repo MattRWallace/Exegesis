@@ -42,7 +42,7 @@ class AnnotationClass extends \ReflectionClass {
 	 * @return AnnotationMethod Returns an AnnotationMethod object reflecting the class' constructor.
 	 */
 	public function getConstructor() {
-		return new AnnotationMethod($this, '__construct');
+		return new AnnotationMethod($this->getName(), '__construct');
 	}
 
 	/**
@@ -67,8 +67,8 @@ class AnnotationClass extends \ReflectionClass {
 	 * @access public
 	 * @return AnnotationMethod An AnnotationMethod object representing the requested method.
 	 */
-	public function getMethod($name) {
-		return new AnnotationMethod($this, $name);
+    public function getMethod($name) {
+		return new AnnotationMethod($this->getName(), $name);
 	}
 
 	/**
@@ -85,7 +85,7 @@ class AnnotationClass extends \ReflectionClass {
 	 * @return array Returns an array of AnnotationMethod objects reflecting each method.
 	 */
 	public function getMethods($filter) {
-		return array_map(function($object) { return new AnnotationMethod($this, $object->getName()); }, parent::getMethods($filter));
+		return array_map(function($object) { return new AnnotationMethod($this->getName(), $object->getName()); }, parent::getMethods($filter));
 	}
 
 	/**
