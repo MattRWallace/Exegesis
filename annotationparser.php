@@ -86,6 +86,13 @@ class AnnotationParser implements AnnotationParserInterface {
 			'@version',
          ];
 
+    /**
+     * Array containing all the arrays currently blacklisted
+     *
+     * @var
+     * @access private
+     * @statics
+     */
     private static $blacklist = [];
 
 	/**
@@ -101,78 +108,66 @@ class AnnotationParser implements AnnotationParserInterface {
 
     private function parse() {
 		// Remove the comment markers
-		$docs = str_replace(['/*', '*/', '*'], '', $this->docs);
+        $docs = str_replace(['/*', '*/', '*'], '', $this->docs);
 
-		// remove blank lines
-		$docs = trim($docs);
-		$docs = preg_replace('/\n\s*\n+/', "\n", $docs);
+        // collapse all the lines down into a single line string
+        $docs = trim($docs);
+        $docs = preg_replace('/\n\s*\n*/', ' ', $docs);
 
-		// break the documentation into lines
-		$lines = explode("\n", $docs);
+        // Split up the string y that annotations
+        preg_match_all("/(@\w+)\s+([^@]+)*/", $docs, $annotations, \PREG_SET_ORDER);
 
-		// check each string
-		foreach ($lines as &$line) {
-			// remove excess white space
-			$line = trim($line);
+        foreach($annotations as $annotation) {
+            // Skip if the annotation is on the blacklist
+            if (self::$blacklist && in_array($annotation[1], self::$blacklist))
+                continue;
 
-			// split off the first token
-			$line = explode(' ', $line, 2);
+            // If annotation has no value (flag)
+            if(!isset($annotation[2]))
+                if(!array_key_exists($annotation[1], $this->annotations))
+                    $this->anotations[$annotation[1]] = null;
 
-			// skip if the line does not start with an annotation
-			if (substr($line[0], 0, 1) !== '@')
-				continue;
+            // parse the value
+            else {
+                // array value?
+                if (preg_match("/[\[\{\(](.*)[\]\}\)]/", $annotation[2], $match))
+                    $value = $this->getArrayValues($match);
+                else
+                    $value = trim($annotation[2]);
 
-			// check for an array annotation
-			if (substr($line[0], -2) === '[]') {
-				$array = true;
-				$line[0] = substr($line[0], 0, -2);
-			}
+            }
 
-			// skip if the annotation is on the blacklist
-			if (self::$blacklist && in_array($line[0], self::$blacklist))
-				continue;
+            // Add the value to the array
 
-			// check for case where there are no arguments (flag)
-			if (count($line) == 1) {
-				if(!array_key_exists($line[0], $this->annotations))
-					$this->annotations[$line[0]] = null;
-			}
-
-			// process arguments
-			else {
-				// check for an array argument and parse if there is one
-				if(preg_match('/[\[|\{|\(]\s*(\s*|\w+\s*(,\s*\w+\s*)*)[\]|\}|\)]/', $line[1])) {
-					// remove all spaces and brackets so we have only words and commas
-					$line[1] = preg_replace('/[\[|\]|\{|\}|\(|\)|\s+]/', '', $line[1]);
-
-					// split on the commas
-					$line[1] = explode(',', $line[1]);
-					$line[1] = array_filter($line[1]);
-				}
-
-				// If no array and argument is a valid word
-				else if (preg_match('/\s*\w+\s*/', $line[1])) {
-					$line[1] = trim($line[1]);
-				}
-
-				// argument invalid so bail out
-				else
-					continue;
-
-				// non array annotation
-				if (is_array($line[1])) {
-					// first occurence
-					if(!array_key_exists($line[0], $this->annotations))
-						$this->annotations[$line[0]] = [$line[1]];
-					// second or greater occurence
-					else
-						array_push($this->annotations[$line[0]], $line[1]);
-				} else
-					if(!array_key_exists($line[0], $this->annotations))
-						$this->annotations[$line[0]] = $line[1];
-			}
+            // First entry
+            if(!array_key_exists($annotation[1], $this->annotations))
+                $this->annotations[$annotation[1]] = $value;
+            // Second entry
+            else if (!is_array($this->annotations[$annotation[1]]))
+                $this->annotations[$annotation[1]] = [$this->annotations[$annotation[1]], $value];
+            // Third or more entry
+            else
+                $this->annotations[$annotation[1]][] = $value;
 		}
-	}
+    }
+
+    /**
+     * Takes the string between brackets of an array and recursively diesects
+     * it to get all values including nested arrays.
+     *
+     * @param array $array The array of elements
+     * @access private
+     * @return array The parsed array to be returned
+     */
+    private function getArrayValues($string) {
+        // break the array ontent into pieces
+        $array = explode(',', $string);
+        foreach($array as &$value) {
+            if (preg_match("/[\[\{\(](.*)[\]\}\)]/", $value, $match))
+                $value = getArrayValues($match);
+        }
+        return $array;
+    }
 
 	/**
 	 * Returns an array of the parsed annotations
