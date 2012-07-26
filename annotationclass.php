@@ -84,7 +84,7 @@ class AnnotationClass extends \ReflectionClass {
 	 * @access public
 	 * @return array Returns an array of AnnotationMethod objects reflecting each method.
 	 */
-	public function getMethods($filter) {
+	public function getMethods($filter = null) {
 		return array_map(function($object) { return new AnnotationMethod($this->getName(), $object->getName()); }, parent::getMethods($filter));
 	}
 
@@ -110,7 +110,7 @@ class AnnotationClass extends \ReflectionClass {
 	 * @access public
 	 * @return array An array of {@link AnnotationProperty} objects.
 	 */
-	public function getProperties($filter) {
+	public function getProperties($filter = null) {
 		return array_map(function ($object) { return new AnnotationProperty($this->getName(), $object->getName()); }, parent::getProperties($filter));
 	}
 
