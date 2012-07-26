@@ -102,7 +102,7 @@ class AnnotationParser implements AnnotationParserInterface {
 	 * @access public
 	 * @return void
 	 */
-	public function __construct($docs, $filter = 0) {
+	public function __construct($docs) {
 		$this->docs = $docs;
 	}
 
@@ -111,11 +111,12 @@ class AnnotationParser implements AnnotationParserInterface {
         $docs = str_replace(['/*', '*/', '*'], '', $this->docs);
 
         // collapse all the lines down into a single line string
-        $docs = trim($docs);
-        $docs = preg_replace('/\n\s*\n*/', ' ', $docs);
+        //$docs = trim($docs);
+        $docs = preg_replace('/\s+/', ' ', $docs);
 
         // Split up the string y that annotations
-        preg_match_all("/(@\w+)\s+([^@]+)*/", $docs, $annotations, \PREG_SET_ORDER);
+        //preg_match_all("/(@\w+)\s+((?:[^@]\S*?(?:\s|$)+)*)/", $docs, $annotations, \PREG_SET_ORDER);
+        preg_match_all("/(@\w+)\s+((?:[^@]\S*?\s+)*)/", $docs, $annotations, \PREG_SET_ORDER);
 
         foreach($annotations as $annotation) {
             // Skip if the annotation is on the blacklist
@@ -123,50 +124,33 @@ class AnnotationParser implements AnnotationParserInterface {
                 continue;
 
             // If annotation has no value (flag)
-            if(!isset($annotation[2]))
-                if(!array_key_exists($annotation[1], $this->annotations))
-                    $this->anotations[$annotation[1]] = null;
-
-            // parse the value
-            else {
-                // array value?
-                if (preg_match("/[\[\{\(](.*)[\]\}\)]/", $annotation[2], $match))
-                    $value = $this->getArrayValues($match);
-                else
-                    $value = trim($annotation[2]);
-
+            if(empty($annotation[2])) {
+                if(!array_key_exists($annotation[1], $this->annotations)) {
+                    $this->annotations[$annotation[1]] = null;
+                }
             }
 
-            // Add the value to the array
+            else {
+                // attempt to decode the array as json
+                $value = json_decode($annotation[2], true);
 
-            // First entry
-            if(!array_key_exists($annotation[1], $this->annotations))
-                $this->annotations[$annotation[1]] = $value;
-            // Second entry
-            else if (!is_array($this->annotations[$annotation[1]]))
-                $this->annotations[$annotation[1]] = [$this->annotations[$annotation[1]], $value];
-            // Third or more entry
-            else
-                $this->annotations[$annotation[1]][] = $value;
-		}
-    }
+                // if decode failed treat as a single value
+                if (!is_array($value))
+                    $value = trim($annotation[2]);
 
-    /**
-     * Takes the string between brackets of an array and recursively diesects
-     * it to get all values including nested arrays.
-     *
-     * @param array $array The array of elements
-     * @access private
-     * @return array The parsed array to be returned
-     */
-    private function getArrayValues($string) {
-        // break the array ontent into pieces
-        $array = explode(',', $string);
-        foreach($array as &$value) {
-            if (preg_match("/[\[\{\(](.*)[\]\}\)]/", $value, $match))
-                $value = getArrayValues($match);
+
+                /* ============================
+                 *  Add the value to the array
+                 * ============================ */
+
+                // First entry
+                if(!array_key_exists($annotation[1], $this->annotations))
+                    $this->annotations[$annotation[1]] = [$value];
+                // Second or greater entry
+                else
+                    $this->annotations[$annotation[1]][] = $value;
+            }
         }
-        return $array;
     }
 
 	/**
