@@ -111,11 +111,9 @@ class AnnotationParser implements AnnotationParserInterface {
         $docs = str_replace(['/*', '*/', '*'], '', $this->docs);
 
         // collapse all the lines down into a single line string
-        //$docs = trim($docs);
         $docs = preg_replace('/\s+/', ' ', $docs);
 
         // Split up the string y that annotations
-        //preg_match_all("/(@\w+)\s+((?:[^@]\S*?(?:\s|$)+)*)/", $docs, $annotations, \PREG_SET_ORDER);
         preg_match_all("/(@\w+)\s+((?:[^@]\S*?\s+)*)/", $docs, $annotations, \PREG_SET_ORDER);
 
         foreach($annotations as $annotation) {

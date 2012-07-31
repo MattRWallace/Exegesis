@@ -11,36 +11,11 @@ Currently there are wrappers for all but **ReflectionZendExtension** and **Refle
 
 Usage
 -----
+Annotations can either be an unquoted string or a JSON object.  Just like any other annotation use the '@' symbol to denote the annotation name. 
 
-There are four types of annotations supported at the current time:
+The parser is smart enough to handle hard-coded line wraps and still return a single string or array. One side effect of this is that any comments you wish to not be parsed as part of an annotation should be written before the first annotation or they will be considered part of the preceding annotation.
 
-* **Single annotation with a single value**
-
-    *Example:* `@myAnnotation myValue`
-
-    The annotation name is unique and the value is one string. 
-
-* **Single annotation with an array value**
-
-    *Example:* `@myAnnotation { array, of, values }`
-
-    As with the first example, the annotation name is unique.  The array can be enclosed with any of the standard brackets `{} [] ()` (The open and close bracket do not need to be the same type but it is good style) and elements within the array should be comma separated.
-
-    It is important to note that commas cannot, at this point in time, be a value in an array (there is no trouble for a single value.) 
-    
-    For example `@myArray [ "Doe, John", "123 Road Way"]` would be parsed with elements `"Doe` `John"` and `"123 Road Way"`.  Note that any quotations within the annotation value are not used for grouping and are part of the value itself.
-
-* **Array annotation with single value**
-
-    *Example:* `@myAnnotation[] someValue`
-
-    If the annotation name is followed by an empty pair of square brackets then the annotation name is no longer unique and you can store multiple, individual values to the same name.  When the value for that annotation is retrieved the return value will be an array with all the values that were indicated.
-
-* **Array annotation with array value**
-
-    *Example:* `@myAnnotation[] {array, of, values }`
-
-    Just like the array annotation except that instead of an array of single values, there is an array of array values.  Currently nested arrays are not spported as a valid value but that feature is on the list to be implemented.
+TODO: Need helpful examples here.
 
 Blacklist
 ---------
@@ -55,7 +30,7 @@ License
 Exegesis is released under the MIT license and is available on github (MattRWallace/Exegesis).  I encourage you to fork me and improve upon what I've started or to let me know what (hopefully) awesome things you've used my ode in.
 
 
-Copyright (c) 2012 Matt Wallace `<matthew.wallace@ieee.org>`
+Copyright (c) 2012 Matt Wallace (<matthew.wallace@ieee.org>)
 
 Permission is hereby granted, free of charge, to any person obtaining a 
 copy of this software and associated documentation files (the "Software"),
