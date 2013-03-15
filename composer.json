@@ -1,0 +1,28 @@
+{
+	"name": "MattRWallace/Exegesis",
+	"description": "Exegesis: Simple annotations for php",
+	"homepage" : "https://github.com/MattRWallace/Exegesis",
+	"license" : "MIT",
+	"version" : "0.7 (beta 2)",
+	"support": {
+		"email"  : "matthew.wallace@ieee.org",
+		"issues" : "https://github.com/MattRWallace/Exegesis/issues",
+		"wiki"   : "https://github.com/MattRWallace/Exegesis/wiki",
+		"source" : "https://github.com/MattRWallace/Exegesis"
+	},
+	"authors": [
+		{
+			"name": "Matthew Wallace",
+			"email": "matthew.wallace@ieee.org",
+			"homepage": "htp://mattwallace.us",
+			"role": "Lead"
+		}
+	],
+	"require": {
+		"php": ">=5.4.6",
+		"ext-Reflection": "*"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "dev-master"
+	}
+}
