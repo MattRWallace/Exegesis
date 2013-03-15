@@ -1,6 +1,6 @@
 <?php
 
-namespace Exegesis;
+namespace MattRWallace\Exegesis;
 
 /**
  * Trait that contains overriden versions of the methods from the

@@ -1,6 +1,6 @@
 <?php
 
-namespace Exegesis;
+namespace MattRWallace\Exegesis;
 
 /**
  * AnnotationObject

@@ -1,6 +1,6 @@
 <?php
 
-namespace Exegesis;
+namespace MattRWallace\Exegesis;
 
 /**
  * Wrapper around the ReflectionClass class that provides the extra
