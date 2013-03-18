@@ -24,5 +24,8 @@
 	},
 	"require-dev": {
 		"phpunit/phpunit": "dev-master"
+	},
+	"autoload": {
+		"psr-0": {"MattRWallace\\Exegesis": "/"}
 	}
 }
