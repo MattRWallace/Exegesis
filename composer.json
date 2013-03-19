@@ -23,7 +23,7 @@
 		"ext-Reflection": "*"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "dev-master"
+		"phpunit/phpunit": "3.7.18"
 	},
 	"autoload": {
 		"psr-0": {"MattRWallace\\Exegesis": "/"}
